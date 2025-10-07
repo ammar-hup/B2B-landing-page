@@ -1,0 +1,48 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap');
+
+@layer base {
+  body {
+    font-family: 'Inter', sans-serif;
+  }
+}
+
+@layer components {
+  .btn {
+    @apply inline-block px-8 py-4 rounded-lg font-semibold transition-all duration-300 transform hover:-translate-y-1;
+  }
+  
+  .btn-primary {
+    @apply bg-secondary text-cream hover:bg-blue-700 shadow-lg;
+  }
+  
+  .btn-outline {
+    @apply border-2 border-secondary text-secondary hover:bg-secondary hover:text-cream;
+  }
+  
+  .service-card {
+    @apply relative overflow-hidden;
+  }
+}
+
+@keyframes bounce {
+  0%, 20%, 53%, 80%, 100% {
+    transform: translate3d(0,0,0);
+  }
+  40%, 43% {
+    transform: translate3d(0, -30px, 0);
+  }
+  70% {
+    transform: translate3d(0, -15px, 0);
+  }
+  90% {
+    transform: translate3d(0, -4px, 0);
+  }
+}
+
+.animate-bounce {
+  animation: bounce 1s infinite;
+}
