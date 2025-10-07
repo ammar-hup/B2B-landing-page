@@ -79,7 +79,7 @@ document.addEventListener('DOMContentLoaded', () => {
       benefits: [
         {
           title: 'Global Network',
-          description: 'Access top hospitals in the US, UK, Germany, Spain, Italy, Turkey, and India',
+          description: 'Access top hospitals in the US, UK, Germany, Spain, Italy, and Turkey',
         },
         {
           title: 'Full Support',
