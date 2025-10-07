@@ -4,6 +4,9 @@ document.addEventListener('DOMContentLoaded', () => {
   const modalContent = document.getElementById('modal-content');
   const closeModal = document.getElementById('close-modal');
   const contactForm = document.querySelector('#contact form');
+  const focusableSelector =
+    'a[href], button:not([disabled]), textarea, input, select, [tabindex]:not([tabindex="-1"])';
+  let previouslyFocusedElement = null;
 
   const serviceData = {
     insurance: {
@@ -91,14 +94,17 @@ document.addEventListener('DOMContentLoaded', () => {
     },
   };
 
-  serviceCards.forEach((card, index) => {
+  serviceCards.forEach((card) => {
+    const serviceKey = card.dataset.service;
+    if (!serviceKey || !serviceData[serviceKey]) {
+      return;
+    }
+
     card.addEventListener('click', () => {
-      const services = ['insurance', 'hospitals', 'corporates', 'travel'];
-      const service = services[index];
-      const data = serviceData[service];
+      const data = serviceData[serviceKey];
 
       modalContent.innerHTML = `
-        <h2 class="text-3xl font-bold text-primary mb-4 pr-12">${data.title}</h2>
+        <h2 id="service-modal-title" class="text-3xl font-bold text-primary mb-4 pr-12">${data.title}</h2>
         <p class="text-xl text-gold font-semibold mb-8">${data.subtitle}</p>
         <div class="space-y-6 mb-8">
           ${data.benefits
@@ -123,13 +129,55 @@ document.addEventListener('DOMContentLoaded', () => {
       `;
 
       serviceModal.classList.remove('hidden');
+      serviceModal.setAttribute('aria-hidden', 'false');
       document.body.style.overflow = 'hidden';
+      previouslyFocusedElement = document.activeElement;
+      const focusable = serviceModal.querySelectorAll(focusableSelector);
+      requestAnimationFrame(() => {
+        (focusable[0] || serviceModal).focus();
+      });
     });
   });
 
+  const handleKeyDown = (event) => {
+    if (event.key === 'Escape') {
+      closeServiceModal();
+      return;
+    }
+
+    if (event.key !== 'Tab') {
+      return;
+    }
+
+    const focusable = Array.from(serviceModal.querySelectorAll(focusableSelector));
+    if (focusable.length === 0) {
+      event.preventDefault();
+      return;
+    }
+
+    const firstElement = focusable[0];
+    const lastElement = focusable[focusable.length - 1];
+    const isShift = event.shiftKey;
+    const { activeElement } = document;
+
+    if (!isShift && activeElement === lastElement) {
+      event.preventDefault();
+      firstElement.focus();
+    } else if (isShift && activeElement === firstElement) {
+      event.preventDefault();
+      lastElement.focus();
+    }
+  };
+
   const closeServiceModal = () => {
     serviceModal.classList.add('hidden');
+    serviceModal.setAttribute('aria-hidden', 'true');
     document.body.style.overflow = 'auto';
+    modalContent.innerHTML = '';
+    if (previouslyFocusedElement) {
+      previouslyFocusedElement.focus();
+      previouslyFocusedElement = null;
+    }
   };
 
   closeModal.addEventListener('click', closeServiceModal);
@@ -139,6 +187,8 @@ document.addEventListener('DOMContentLoaded', () => {
       closeServiceModal();
     }
   });
+
+  serviceModal.addEventListener('keydown', handleKeyDown);
 
   if (contactForm) {
     contactForm.addEventListener('submit', (event) => {
