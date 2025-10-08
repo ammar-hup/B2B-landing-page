@@ -1,0 +1,928 @@
+$font-family-base: 'Inter', sans-serif
+$font-family-serif: 'Georgia', 'Times New Roman', serif
+
+$color-palette: (
+  primary: #01031a,
+  secondary: #1d4ed8,
+  accent: #eed999,
+  gold: #b8860b,
+  cream: #fffcf5,
+  'yellow-50': #fefce8,
+  'blue-800': #1e40af,
+  'gray-300': #d1d5db,
+  'gray-400': #9ca3af,
+  'gray-500': #6b7280,
+  'gray-600': #4b5563,
+  black: rgba(0, 0, 0, 1)
+)
+
+$shadow-map: (
+  lg: unquote('0 20px 25px -5px rgba(1, 3, 26, 0.25), 0 10px 10px -5px rgba(1, 3, 26, 0.2)'),
+  '2xl': unquote('0 25px 50px -12px rgba(1, 3, 26, 0.35)')
+)
+
+$transition-default-duration: 150ms
+
+$spacing-scale: (
+  1: 0.25rem,
+  2: 0.5rem,
+  3: 0.75rem,
+  4: 1rem,
+  5: 1.25rem,
+  6: 1.5rem,
+  8: 2rem,
+  10: 2.5rem,
+  12: 3rem,
+  16: 4rem,
+  20: 5rem
+)
+
+$max-width-map: (
+  '7xl': 80rem,
+  '4xl': 56rem,
+  '3xl': 48rem,
+  '2xl': 42rem,
+  xl: 36rem
+)
+
+$font-size-map: (
+  sm: 0.875rem,
+  lg: 1.125rem,
+  xl: 1.25rem,
+  '2xl': 1.5rem,
+  '3xl': 1.875rem,
+  '4xl': 2.25rem,
+  '5xl': 3rem,
+  '6xl': 3.75rem
+)
+
+$font-weight-map: (
+  medium: 500,
+  semibold: 600,
+  bold: 700
+)
+
+$radius-map: (
+  lg: 0.5rem,
+  xl: 0.75rem,
+  '2xl': 1rem,
+  '3xl': 1.5rem,
+  full: 9999px
+)
+
+$z-index-map: (
+  50: 50
+)
+
+$sizing-utilities: (
+  'w-full': (width: 100%),
+  'w-10': (width: 2.5rem),
+  'h-10': (height: 2.5rem),
+  'min-h-screen': (min-height: 100vh)
+)
+
+$inset-utilities: (
+  'inset-0': (top: 0, right: 0, bottom: 0, left: 0),
+  'top-5': (top: 1.25rem),
+  'top-6': (top: map-get($spacing-scale, 6)),
+  'right-6': (right: map-get($spacing-scale, 6)),
+  'left-8': (left: map-get($spacing-scale, 8))
+)
+
+$gap-values: (2, 4, 6, 8, 10, 12, 16)
+$space-stack-values: (3, 4, 6, 8)
+
+$breakpoints-up: (
+  sm: 640px,
+  md: 768px,
+  lg: 1024px
+)
+
+$breakpoints-down: (
+  lg: 1024px,
+  md: 768px,
+  sm: 640px,
+  xs: 480px
+)
+
+/* ----------------------------------------
+Helpers
+---------------------------------------- */
+
+@function color-var($name)
+  @return var(--color-#{$name})
+
+@function space-var($key)
+  @return var(--space-#{$key})
+
+@mixin respond-up($breakpoint)
+  $value: map-get($breakpoints-up, $breakpoint)
+
+  @if $value
+    @media (min-width: $value)
+      @content
+
+@mixin respond-down($breakpoint)
+  $value: map-get($breakpoints-down, $breakpoint)
+
+  @if $value
+    @media (max-width: $value)
+      @content
+
+@mixin spacing-utilities($config)
+  @each $class, $properties in $config
+    @each $step, $size in $spacing-scale
+      .#{$class}-#{$step}
+        @if type-of($properties) == list
+          @each $property in $properties
+            #{$property}: space-var($step)
+        @else
+          #{$properties}: space-var($step)
+
+@mixin color-utilities($prefix, $property)
+  @each $name, $value in $color-palette
+    .#{$prefix}-#{$name}
+      #{$property}: color-var($name)
+
+@mixin font-size-utilities
+  @each $name, $size in $font-size-map
+    .text-#{$name}
+      font-size: $size
+
+@mixin shadow-utilities
+  @each $name, $value in $shadow-map
+    .shadow-#{$name}
+      box-shadow: #{$value}
+
+@mixin raw-selector($selector)
+  #{unquote($selector)}
+    @content
+
+/* ----------------------------------------
+CSS variable exports
+---------------------------------------- */
+
+:root
+  @each $name, $value in $color-palette
+    --color-#{$name}: #{$value}
+
+  @each $name, $value in $shadow-map
+    --shadow-#{$name}: #{$value}
+
+  --transition-duration: $transition-default-duration
+
+  @each $step, $value in $spacing-scale
+    --space-#{$step}: #{$value}
+
+  @each $name, $value in $max-width-map
+    --max-#{$name}: #{$value}
+
+/* ----------------------------------------
+Base styles
+---------------------------------------- */
+
+*,
+*::before,
+*::after
+  box-sizing: border-box
+
+html
+  scroll-behavior: smooth
+  height: 100%
+
+body
+  margin: 0
+  font-family: $font-family-base
+  background-color: color-var(cream)
+  color: color-var(primary)
+  line-height: 1.6
+  scroll-snap-type: y mandatory
+  min-height: 100%
+
+section
+  min-height: 100vh
+  scroll-snap-align: start
+  scroll-snap-stop: always
+  display: flex
+  flex-direction: column
+  justify-content: center
+
+h1,
+h2,
+h3,
+h4,
+h5,
+h6
+  margin: 0
+  font-weight: 700
+
+p
+  margin: 0
+
+a
+  color: inherit
+  text-decoration: none
+
+ul
+  padding-left: 0
+  margin: 0
+  list-style: none
+
+button
+  font: inherit
+  border: none
+  cursor: pointer
+
+button,
+input,
+textarea,
+select
+  font-family: inherit
+
+/* ----------------------------------------
+Utilities
+---------------------------------------- */
+
+.font-inter
+  font-family: $font-family-base
+
+.font-serif
+  font-family: $font-family-serif
+
+@each $name, $weight in $font-weight-map
+  .font-#{$name}
+    font-weight: $weight
+
+@include color-utilities('bg', background-color)
+@include color-utilities('text', color)
+@include font-size-utilities
+
+.bg-opacity-80
+  background-color: rgba(0, 0, 0, 0.8)
+
+.leading-tight
+  line-height: 1.25
+
+.leading-relaxed
+  line-height: 1.625
+
+.text-center
+  text-align: center
+
+.text-left
+  text-align: left
+
+.text-right
+  text-align: right
+
+.italic
+  font-style: italic
+
+@each $name, $value in $max-width-map
+  .max-w-#{$name}
+    max-width: var(--max-#{$name})
+
+.max-h-\[90vh\]
+  max-height: 90vh
+
+.mx-auto
+  margin-left: auto
+  margin-right: auto
+
+$spacing-config: (
+  m: margin,
+  mx: (margin-left, margin-right),
+  my: (margin-top, margin-bottom),
+  mt: margin-top,
+  mr: margin-right,
+  mb: margin-bottom,
+  ml: margin-left,
+  p: padding,
+  px: (padding-left, padding-right),
+  py: (padding-top, padding-bottom),
+  pt: padding-top,
+  pr: padding-right,
+  pb: padding-bottom,
+  pl: padding-left
+)
+
+@include spacing-utilities($spacing-config)
+
+@each $gap in $gap-values
+  .gap-#{$gap}
+    gap: space-var($gap)
+
+@each $value in $space-stack-values
+  .space-y-#{$value} > * + *
+    margin-top: space-var($value)
+
+.flex
+  display: flex
+
+.inline-flex
+  display: inline-flex
+
+.inline-block
+  display: inline-block
+
+.block
+  display: block
+
+.grid
+  display: grid
+
+.hidden
+  display: none
+
+.flex-col
+  flex-direction: column
+
+.flex-row
+  flex-direction: row
+
+.flex-wrap
+  flex-wrap: wrap
+
+.items-center
+  align-items: center
+
+.items-start
+  align-items: flex-start
+
+.justify-center
+  justify-content: center
+
+.justify-start
+  justify-content: flex-start
+
+.flex-shrink-0
+  flex-shrink: 0
+
+.group
+  position: relative
+
+.grid-cols-1
+  grid-template-columns: repeat(1, minmax(0, 1fr))
+
+.grid-cols-3
+  grid-template-columns: repeat(3, minmax(0, 1fr))
+
+.relative
+  position: relative
+
+.absolute
+  position: absolute
+
+.fixed
+  position: fixed
+
+.z-50
+  z-index: map-get($z-index-map, 50)
+
+@each $class, $properties in $inset-utilities
+  .#{$class}
+    @each $property, $value in $properties
+      #{$property}: $value
+
+@each $class, $properties in $sizing-utilities
+  .#{$class}
+    @each $property, $value in $properties
+      #{$property}: $value
+
+@each $name, $value in $radius-map
+  .rounded-#{$name}
+    border-radius: $value
+
+.border
+  border: 1px solid rgba(1, 3, 26, 0.1)
+
+.border-2
+  border-width: 2px
+  border-style: solid
+  border-color: currentColor
+
+.border-l-4
+  border-left-width: 4px
+  border-style: solid
+  border-color: currentColor
+
+.border-t
+  border-top-width: 1px
+  border-top-style: solid
+  border-top-color: currentColor
+
+.border-gold
+  border-color: color-var(gold)
+
+.border-secondary
+  border-color: color-var(secondary)
+
+.border-accent
+  border-color: color-var(accent)
+
+@include shadow-utilities
+
+.transition-all
+  transition-property: all
+  transition-duration: var(--transition-duration)
+  transition-timing-function: ease
+
+.transition-transform
+  transition-property: transform
+  transition-duration: var(--transition-duration)
+  transition-timing-function: ease
+
+.transition-colors
+  transition-property: background-color, border-color, color, fill, stroke
+  transition-duration: var(--transition-duration)
+  transition-timing-function: ease
+
+.duration-300
+  transition-duration: 300ms
+
+.duration-500
+  transition-duration: 500ms
+
+.cursor-pointer
+  cursor: pointer
+
+.overflow-hidden
+  overflow: hidden
+
+.overflow-y-auto
+  overflow-y: auto
+
+.opacity-30
+  opacity: 0.3
+
+.opacity-90
+  opacity: 0.9
+
+.transform
+  transform: translateZ(0)
+
+.-translate-x-full
+  transform: translateX(-100%)
+
+.service-card
+  position: relative
+  overflow: hidden
+
+.modal-panel
+  width: unquote('min(100%, 44rem)')
+  max-height: unquote('calc(100vh - 4rem)')
+  overflow-y: auto
+  box-sizing: border-box
+  scrollbar-width: thin
+  scrollbar-color: rgba(107, 114, 128, 0.6) transparent
+
+.modal-panel::-webkit-scrollbar
+  width: 8px
+
+.modal-panel::-webkit-scrollbar-track
+  background: transparent
+
+.modal-panel::-webkit-scrollbar-thumb
+  background-color: rgba(107, 114, 128, 0.6)
+  border-radius: 9999px
+
+.modal-panel::-webkit-scrollbar-thumb:hover
+  background-color: rgba(75, 85, 99, 0.75)
+
+.open_modal
+  display: inline-block
+  cursor: pointer
+  transition: transform 0.3s ease, box-shadow 0.3s ease
+
+.open_modal:hover
+  transform: translateY(-4px)
+  box-shadow: var(--shadow-lg)
+
+.open_modal:focus-visible
+  outline: 3px solid color-var(accent)
+  outline-offset: 4px
+
+.open_modal img
+  display: block
+  width: 100%
+  height: auto
+  border-radius: 1rem
+
+.video-wrapper
+  position: relative
+  width: 100%
+  padding-top: 56.25%
+
+.video-wrapper iframe
+  position: absolute
+  top: 0
+  left: 0
+  width: 100%
+  height: 100%
+  border: 0
+
+.bg-gradient-to-br,
+.bg-gradient-to-r
+  background-size: cover
+  background-repeat: no-repeat
+
+.bg-gradient-to-br
+  &.from-cream.to-yellow-50
+    background-image: linear-gradient(to bottom right, color-var(cream), color-var('yellow-50'))
+
+  &.from-blue-800.to-secondary
+    background-image: linear-gradient(to bottom right, color-var('blue-800'), color-var(secondary))
+
+  &.from-gold.to-accent
+    background-image: linear-gradient(to bottom right, color-var(gold), color-var(accent))
+
+  &.from-primary.to-secondary
+    background-image: linear-gradient(to bottom right, color-var(primary), color-var(secondary))
+
+    &.text-cream
+      color: color-var(cream)
+
+.bg-gradient-to-r
+  &.from-secondary.to-gold
+    background-image: linear-gradient(to right, color-var(secondary), color-var(gold))
+
+  &.from-transparent.via-accent\/20.to-transparent
+    background-image: linear-gradient(
+      to right,
+      rgba(255, 255, 255, 0),
+      rgba(238, 217, 153, 0.2),
+      rgba(255, 255, 255, 0)
+    )
+
+.bg-primary
+  &.text-cream
+    color: color-var(cream)
+
+.bg-secondary
+  &.text-cream
+    color: color-var(cream)
+
+.bg-gold
+  &.text-cream
+    color: color-var(cream)
+
+.bg-accent
+  &.text-primary
+    color: color-var(primary)
+
+.filter
+  filter: none
+
+  &.hue-rotate-180
+    filter: hue-rotate(180deg)
+
+  &.saturate-150
+    filter: saturate(1.5)
+
+  &.hue-rotate-180.saturate-150
+    filter: hue-rotate(180deg) saturate(1.5)
+
+.backdrop-blur-sm
+  backdrop-filter: blur(6px)
+
+.resize-vertical
+  resize: vertical
+
+.animate-bounce
+  animation: bounce 1s infinite
+
+@keyframes bounce
+  0%,
+  20%,
+  53%,
+  80%,
+  100%
+    transform: translate3d(0, 0, 0)
+
+  40%,
+  43%
+    transform: translate3d(0, -30px, 0)
+
+  70%
+    transform: translate3d(0, -15px, 0)
+
+  90%
+    transform: translate3d(0, -4px, 0)
+
+.text-gray-400,
+.text-gray-500,
+.text-gray-600,
+.text-primary,
+.text-cream
+  &.text-sm
+    font-size: map-get($font-size-map, sm)
+
+.transition-transform,
+.transition-all,
+.transition-colors
+  &.duration-300
+    transition-duration: 300ms
+
+  &.duration-500
+    transition-duration: 500ms
+
+/* ----------------------------------------
+Escaped selector utilities
+---------------------------------------- */
+
+@include raw-selector('.hover\\:transform:hover')
+  transform: translate3d(0, 0, 0)
+
+@include raw-selector('.hover\\:-translate-y-1:hover')
+  transform: translateY(-0.25rem)
+
+@include raw-selector('.hover\\:-translate-y-2:hover')
+  transform: translateY(-0.5rem)
+
+@include raw-selector('.hover\\:scale-105:hover')
+  transform: scale(1.05)
+
+@include raw-selector('.hover\\:bg-blue-700:hover')
+  background-color: #1d4ed8
+
+@include raw-selector('.hover\\:bg-secondary:hover')
+  background-color: color-var(secondary)
+  color: color-var(cream)
+
+@include raw-selector('.hover\\:bg-yellow-700:hover')
+  background-color: #b45309
+
+@include raw-selector('.hover\\:bg-gray-800:hover')
+  background-color: #1f2937
+
+@include raw-selector('.hover\\:text-blue-700:hover')
+  color: #1d4ed8
+
+@include raw-selector('.hover\\:text-cream:hover')
+  color: color-var(cream)
+
+@include raw-selector('.hover\\:border-accent:hover')
+  border-color: color-var(accent)
+
+@include raw-selector('.hover\\:shadow-lg:hover')
+  box-shadow: map-get($shadow-map, lg)
+
+@include raw-selector('.hover\\:shadow-2xl:hover')
+  box-shadow: map-get($shadow-map, '2xl')
+
+@include raw-selector('.hover\\:underline:hover')
+  text-decoration: underline
+
+@include raw-selector('.focus\\:border-accent:focus')
+  border-color: color-var(accent)
+
+@include raw-selector('.focus\\:outline-none:focus')
+  outline: none
+
+@include raw-selector('.focus\\:ring-2:focus')
+  box-shadow: 0 0 0 4px rgba(29, 78, 216, 0.2)
+
+@include raw-selector('.focus\\:ring-accent\\/20:focus')
+  box-shadow: 0 0 0 4px rgba(238, 217, 153, 0.2)
+
+@include raw-selector('.group-hover\\:translate-x-full')
+  transform: translateX(-100%)
+
+@include raw-selector('.group:hover .group-hover\\:translate-x-full')
+  transform: translateX(100%)
+
+/* ----------------------------------------
+Scrollbar helpers for service modal
+---------------------------------------- */
+
+/* Firefox */
+@include raw-selector('#service-modal .max-h-\\[90vh\\]')
+  scrollbar-width: thin
+  scrollbar-color: color-var('gray-500') transparent
+
+/* Chrome, Edge, Safari */
+@include raw-selector('#service-modal .max-h-\\[90vh\\]::-webkit-scrollbar')
+  width: 6px
+  height: 6px
+
+@include raw-selector('#service-modal .max-h-\\[90vh\\]::-webkit-scrollbar-track')
+  background: transparent
+
+@include raw-selector('#service-modal .max-h-\\[90vh\\]::-webkit-scrollbar-thumb')
+  background-color: color-var('gray-500')
+  border-radius: 10px
+  opacity: 0.5
+
+@include raw-selector('#service-modal .max-h-\\[90vh\\]::-webkit-scrollbar-thumb:hover')
+  background-color: color-var('gray-600')
+
+/* ----------------------------------------
+Responsive utilities
+---------------------------------------- */
+
+@include respond-up(sm)
+  @include raw-selector('.sm\\:flex-row')
+    flex-direction: row
+
+  @include raw-selector('.sm\\:grid-cols-2')
+    grid-template-columns: repeat(2, minmax(0, 1fr))
+
+@include respond-up(md)
+  @include raw-selector('.md\\:grid-cols-3')
+    grid-template-columns: repeat(3, minmax(0, 1fr))
+
+  @include raw-selector('.md\\:text-2xl')
+    font-size: map-get($font-size-map, '2xl')
+
+  @include raw-selector('.md\\:text-4xl')
+    font-size: map-get($font-size-map, '4xl')
+
+  @include raw-selector('.md\\:text-5xl')
+    font-size: map-get($font-size-map, '5xl')
+
+@include respond-up(lg)
+  @include raw-selector('.lg\\:grid-cols-2')
+    grid-template-columns: repeat(2, minmax(0, 1fr))
+
+  @include raw-selector('.lg\\:grid-cols-3')
+    grid-template-columns: repeat(3, minmax(0, 1fr))
+
+  @include raw-selector('.lg\\:grid-cols-4')
+    grid-template-columns: repeat(4, minmax(0, 1fr))
+
+  @include raw-selector('.lg\\:gap-16')
+    gap: space-var(16)
+
+  @include raw-selector('.lg\\:justify-start')
+    justify-content: flex-start
+
+  @include raw-selector('.lg\\:text-left')
+    text-align: left
+
+  @include raw-selector('.lg\\:text-6xl')
+    font-size: map-get($font-size-map, '6xl')
+
+  @include raw-selector('.lg\\:py-20')
+    padding-top: space-var(20)
+    padding-bottom: space-var(20)
+
+  @include raw-selector('.lg\\:p-10')
+    padding: space-var(10)
+
+  @include raw-selector('.lg\\:p-12')
+    padding: space-var(12)
+
+@include respond-down(lg)
+  section
+    padding-top: space-var(12)
+    padding-bottom: space-var(12)
+
+  .modal-panel
+    width: unquote('min(90vw, 40rem)')
+    max-height: unquote('calc(100vh - 4rem)')
+    padding: space-var(6)
+    border-radius: 1rem
+
+  .modal-panel h2
+    font-size: unquote('clamp(1.5rem, 4.5vw, 2rem)')
+
+  .modal-panel p
+    font-size: 1rem
+
+  .modal-panel #modal-content button
+    padding-block: space-var(3)
+
+  .video-wrapper
+    padding-top: 58%
+
+  #contact
+    .grid
+      grid-template-columns: 1fr
+      gap: space-var(8)
+
+    .bg-primary
+      padding: space-var(6)
+      border-radius: 1.25rem
+
+    .bg-primary
+      input,
+      select,
+      textarea
+        font-size: 1rem
+        padding: space-var(3)
+
+    button,
+    a[href^='mailto']
+      width: 100%
+      text-align: center
+
+    .flex
+      flex-direction: column
+      align-items: stretch
+
+      > div:first-child
+        margin-bottom: space-var(5)
+
+@include respond-down(md)
+  section
+    padding-top: space-var(10)
+    padding-bottom: space-var(10)
+
+  .modal-panel
+    width: unquote('calc(100% - 2rem)')
+    max-height: unquote('calc(100vh - 2rem)')
+    padding: space-var(5)
+    border-radius: 0.875rem
+
+    h2
+      font-size: unquote('clamp(1.4rem, 5.5vw, 1.85rem)')
+
+    p
+      font-size: 0.95rem
+
+    #modal-content button
+      width: 100%
+      padding-block: space-var(3)
+
+  @include raw-selector('#modal-content .space-y-6 > * + *')
+    margin-top: space-var(5)
+
+  #contact
+    .grid
+      gap: space-var(6)
+
+    .space-y-8 > * + *
+      margin-top: space-var(5)
+
+    .bg-primary
+      padding: space-var(5)
+      border-radius: 1rem
+
+@include respond-down(sm)
+  .modal-panel
+    padding: space-var(4)
+    border-radius: 0.75rem
+
+    h2
+      font-size: unquote('clamp(1.3rem, 6.5vw, 1.7rem)')
+
+    p
+      font-size: 0.92rem
+
+  @include raw-selector('#service-modal .text-center.mt-2')
+    display: flex
+    flex-direction: column
+    align-items: center
+    gap: 0.75rem
+
+  @include raw-selector('#service-modal .text-center.mt-2 span.inline-flex')
+    margin-right: 0
+    justify-content: center
+    width: 100%
+
+@include respond-down(xs)
+  section
+    padding-top: space-var(8)
+    padding-bottom: space-var(8)
+
+  .modal-panel
+    padding: space-var(4)
+    border-radius: 0.7rem
+
+    h2
+      font-size: unquote('clamp(1.3rem, 7vw, 1.6rem)')
+
+    p
+      font-size: 0.9rem
+
+    #modal-content button
+      width: 100%
+      padding-block: space-var(3)
+
+  .video-wrapper
+    padding-top: 64%
+
+  #contact
+    .bg-primary
+      padding: space-var(4)
+      border-radius: 0.9rem
+
+    h2
+      font-size: unquote('clamp(1.6rem, 7vw, 2rem)')
+
+    h3
+      font-size: unquote('clamp(1.25rem, 6vw, 1.6rem)')
+
+  @include raw-selector('#service-modal .text-center.mt-2 span.inline-flex')
+    margin-right: 0
+    justify-content: center
+    width: 100%
+
+/* ----------------------------------------
+Contact layout adjustments (shared)
+---------------------------------------- */
+
+#contact .bg-primary input,
+#contact .bg-primary select,
+#contact .bg-primary textarea
+  font-family: inherit
