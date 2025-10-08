@@ -1,7 +1,7 @@
 document.addEventListener('DOMContentLoaded', () => {
   const serviceCards = document.querySelectorAll('.service-card');
   const serviceModal = document.getElementById('service-modal');
-  const modalContent = document.getElementById('modal-content');
+  const modalContent = document.getElementById('service-modal-content');
   const closeModal = document.getElementById('close-modal');
   const contactForm = document.querySelector('#contact form');
   const focusableSelector =
@@ -122,8 +122,28 @@ document.addEventListener('DOMContentLoaded', () => {
           <button class="bg-secondary text-cream px-8 py-4 rounded-lg font-semibold text-lg hover:bg-blue-700 transform hover:-translate-y-1 transition-all duration-300 shadow-lg mb-4">
             ${data.cta}
           </button>
-          <div class="text-gray-600 text-sm">
-            <span>📞 Phone</span> | <span>📧 Email</span> | <span>💬 WhatsApp</span>
+          <div class="text-center mt-2">
+            <span class="inline-flex items-center">
+              <i class="fas fa-phone mr-1"></i>
+              <a id="contact-us-phone" href="tel:+201280958411" dir="ltr" class="text-secondary hover:text-blue-700 font-medium hover:underline mx-1">
+                +201280958411
+              </a>
+            </span>
+            | 
+            <span class="inline-flex items-center">
+              <i class="fas fa-envelope mr-1"></i>
+              <a href="mailto:partners@docspert.com" class="text-secondary hover:text-blue-700 font-medium hover:underline mx-1">
+                partners@docspert.com
+              </a>
+            </span>
+            | 
+            <span class="inline-flex items-center">
+              <i class="fab fa-whatsapp mr-1"></i>
+              <a href="https://wa.me/201093300690" target="_blank" 
+                class="text-secondary hover:text-blue-700 font-medium hover:underline mx-1" 
+                dir="ltr">+201093300690
+              </a>
+            </span>
           </div>
         </div>
       `;
@@ -199,6 +219,100 @@ document.addEventListener('DOMContentLoaded', () => {
       alert('Thank you for your inquiry! We will contact you soon.');
       contactForm.reset();
     });
+  }
+
+  const videoTriggers = document.querySelectorAll('.open_modal');
+  const videoModal = document.getElementById('EstablishDocspert');
+
+  if (videoTriggers.length && videoModal) {
+    const closeVideoModalButton = document.getElementById('close-video-modal');
+    const videoFrame = videoModal.querySelector('iframe');
+    const videoSrc = videoFrame.dataset.src;
+
+    const setVideoSource = (autoplay) => {
+      if (!videoSrc) {
+        return;
+      }
+      const separator = videoSrc.includes('?') ? '&' : '?';
+      if (autoplay) {
+        videoFrame.src = `${videoSrc}${separator}autoplay=1`;
+      } else {
+        videoFrame.src = '';
+        videoFrame.removeAttribute('src');
+      }
+    };
+
+    const trapFocus = (modal, event) => {
+      const focusable = Array.from(modal.querySelectorAll(focusableSelector));
+      if (focusable.length === 0) {
+        event.preventDefault();
+        return;
+      }
+
+      const firstElement = focusable[0];
+      const lastElement = focusable[focusable.length - 1];
+      const isShift = event.shiftKey;
+      const { activeElement } = document;
+
+      if (!isShift && activeElement === lastElement) {
+        event.preventDefault();
+        firstElement.focus();
+      } else if (isShift && activeElement === firstElement) {
+        event.preventDefault();
+        lastElement.focus();
+      }
+    };
+
+    const closeVideoModal = () => {
+      videoModal.classList.add('hidden');
+      videoModal.setAttribute('aria-hidden', 'true');
+      document.body.style.overflow = 'auto';
+      setVideoSource(false);
+      if (previouslyFocusedElement) {
+        previouslyFocusedElement.focus();
+        previouslyFocusedElement = null;
+      }
+    };
+
+    const handleVideoKeyDown = (event) => {
+      if (event.key === 'Escape') {
+        closeVideoModal();
+        return;
+      }
+
+      if (event.key === 'Tab') {
+        trapFocus(videoModal, event);
+      }
+    };
+
+    const openVideoModal = (event) => {
+      event.preventDefault();
+      previouslyFocusedElement = document.activeElement;
+      setVideoSource(true);
+      videoModal.classList.remove('hidden');
+      videoModal.setAttribute('aria-hidden', 'false');
+      document.body.style.overflow = 'hidden';
+
+      const focusable = videoModal.querySelectorAll(focusableSelector);
+      requestAnimationFrame(() => {
+        (focusable[0] || videoModal).focus();
+      });
+    };
+
+    videoTriggers.forEach((trigger) => {
+      trigger.addEventListener('click', openVideoModal);
+    });
+    if (closeVideoModalButton) {
+      closeVideoModalButton.addEventListener('click', closeVideoModal);
+    }
+
+    videoModal.addEventListener('click', (event) => {
+      if (event.target === videoModal) {
+        closeVideoModal();
+      }
+    });
+
+    videoModal.addEventListener('keydown', handleVideoKeyDown);
   }
 
   const observerOptions = {
