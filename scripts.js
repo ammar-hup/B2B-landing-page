@@ -123,20 +123,18 @@ document.addEventListener('DOMContentLoaded', () => {
             ${data.cta}
           </button>
           <div class="text-center mt-2">
-            <span class="inline-flex items-center">
+            <span class="inline-flex items-center mr-3">
               <i class="fas fa-phone mr-1"></i>
               <a id="contact-us-phone" href="tel:+201280958411" dir="ltr" class="text-secondary hover:text-blue-700 font-medium hover:underline mx-1">
                 +201280958411
               </a>
             </span>
-            | 
-            <span class="inline-flex items-center">
+            <span class="inline-flex items-center mr-3">
               <i class="fas fa-envelope mr-1"></i>
               <a href="mailto:partners@docspert.com" class="text-secondary hover:text-blue-700 font-medium hover:underline mx-1">
                 partners@docspert.com
               </a>
             </span>
-            | 
             <span class="inline-flex items-center">
               <i class="fab fa-whatsapp mr-1"></i>
               <a href="https://wa.me/201093300690" target="_blank" 
