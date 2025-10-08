@@ -1,0 +1,38 @@
+<!-- Service Details Modal -->
+<div id="service-modal"
+  class="fixed inset-0 bg-black bg-opacity-80 backdrop-blur-sm hidden z-50 flex items-center justify-center p-4"
+  role="dialog" aria-modal="true" aria-labelledby="service-modal-title" aria-describedby="service-modal-content"
+  aria-hidden="true" tabindex="-1">
+  <div class="modal-panel bg-cream rounded-3xl max-w-2xl max-h-[90vh] overflow-y-auto relative p-8 lg:p-12 m-4">
+    <button id="close-modal" type="button"
+      class="absolute top-6 right-6 w-10 h-10 bg-primary text-cream rounded-full flex items-center justify-center hover:bg-gray-800 transition-colors"
+      aria-label="Close modal">
+      <span class="text-xl">&times;</span>
+    </button>
+    <div id="service-modal-content"></div>
+  </div>
+</div>
+
+<!-- Video Modal -->
+<div id="EstablishDocspert"
+  class="fixed inset-0 bg-black bg-opacity-80 backdrop-blur-sm hidden z-50 flex items-center justify-center p-4"
+  role="dialog" aria-modal="true" aria-labelledby="video-modal-title" aria-hidden="true" tabindex="-1">
+  <div class="modal-panel bg-cream rounded-3xl max-w-3xl w-full overflow-hidden relative p-6">
+    <div class="flex items-center justify-between">
+      <button id="close-video-modal" type="button"
+        class="w-10 h-10 bg-primary text-cream rounded-full flex items-center justify-center hover:bg-gray-800 transition-colors"
+        aria-label="Close video modal">
+        <span class="text-xl">&times;</span>
+      </button>
+    </div>
+    <h2 id="video-modal-title" class="text-2xl text-center mb-4 text-primary">
+      Why did we establish Docspert Health?
+    </h2>
+    <div class="video-wrapper rounded-2xl overflow-hidden">
+      <iframe data-src="https://www.youtube.com/embed/A5TD1wuzZfU?start=1" title="Message from Prof. Hisham Mehanna"
+        frameborder="0"
+        allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+        allowfullscreen></iframe>
+    </div>
+  </div>
+</div>

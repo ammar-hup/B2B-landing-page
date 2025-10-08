@@ -1,4 +1,4 @@
-document.addEventListener('DOMContentLoaded', () => {
+const initializeApp = () => {
   const serviceCards = document.querySelectorAll('.service-card');
   const serviceModal = document.getElementById('service-modal');
   const modalContent = document.getElementById('service-modal-content');
@@ -333,4 +333,44 @@ document.addEventListener('DOMContentLoaded', () => {
     section.style.transition = 'opacity 0.6s ease, transform 0.6s ease';
     observer.observe(section);
   });
-});
+};
+
+(() => {
+  let initialized = false;
+  const state = {
+    domReady: document.readyState !== 'loading',
+    sectionsReady: !!document.body && document.body.dataset.sectionsLoaded === 'true',
+  };
+
+  const tryInitialize = () => {
+    if (initialized || !state.domReady || !state.sectionsReady) {
+      return;
+    }
+    initialized = true;
+    initializeApp();
+  };
+
+  if (!state.domReady) {
+    document.addEventListener(
+      'DOMContentLoaded',
+      () => {
+        state.domReady = true;
+        tryInitialize();
+      },
+      { once: true },
+    );
+  }
+
+  if (!state.sectionsReady) {
+    document.addEventListener(
+      'sections:loaded',
+      () => {
+        state.sectionsReady = true;
+        tryInitialize();
+      },
+      { once: true },
+    );
+  }
+
+  tryInitialize();
+})();
